@@ -7,7 +7,7 @@ import { version } from "../package.json";
 initializeApp();
 
 export const cleanupStaleData = onSchedule(
-  { schedule: "0 2 * * *", timeZone: "UTC" },
+  { schedule: "0 2 * * *", timeZone: "UTC", memory: "256MiB" },
   async () => {
     console.log("Starting cleanup run", { version, dryRun: config.DRY_RUN });
     const result = await runCleanup(config);
