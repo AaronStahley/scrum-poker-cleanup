@@ -13,7 +13,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
           cache-dependency-path: functions/package-lock.json
 
@@ -33,7 +33,7 @@ jobs:
         run: printf '%s' "$SA_KEY" > /tmp/gcp-sa-key.json
 
       - name: Deploy to Firebase
-        run: npx firebase-tools@15.22.0 deploy --only functions
+        run: npx firebase-tools@15.22.0 deploy --only functions --force
         working-directory: functions
         env:
           GOOGLE_APPLICATION_CREDENTIALS: /tmp/gcp-sa-key.json
