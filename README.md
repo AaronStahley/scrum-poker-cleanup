@@ -141,3 +141,7 @@ functions/src/
 ├── test-helpers.ts   — shared Jest test utilities
 └── *.test.ts         — unit tests for each collector and the orchestrator
 ```
+
+## License
+
+Copyright 2026 Aaron Stahley. Licensed under the [Apache License 2.0](./LICENSE).
