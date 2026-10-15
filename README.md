@@ -21,17 +21,17 @@ All thresholds are configurable via environment variables. The service defaults 
 ## Prerequisites
 
 - Firebase project on the **Blaze (pay-as-you-go) plan** — required for Cloud Functions.
-- Node.js 20+
+- Node.js 22 (matches the Cloud Functions runtime in `functions/package.json`)
 
 ## Setup
 
 ### 1. Link your Firebase project
 
+`.firebaserc` points at the maintainer's project (`thescrumpoker`). To deploy to your own project, switch to it:
+
 ```bash
 firebase use <your-firebase-project-id>
 ```
-
-Or edit `.firebaserc` directly and replace `<YOUR_FIREBASE_PROJECT_ID>`.
 
 ### 2. Install dependencies
 
@@ -74,6 +74,8 @@ Requires a Google service account key with Firestore and Auth access. Set the pa
 export GOOGLE_APPLICATION_CREDENTIALS=/path/to/service-account.json
 ```
 
+The script uses the project from `FIREBASE_PROJECT_ID` if set, otherwise the default project in `.firebaserc`.
+
 Pass a room ID as an argument to inspect its members alongside the run:
 
 ```bash
@@ -104,6 +106,8 @@ Push to `main` — the workflow in `.github/workflows/deploy.yml` handles the bu
 ```bash
 cd functions && npm test
 ```
+
+Pull requests to `main` and `develop` run the tests and build in `.github/workflows/ci.yml`.
 
 ## Log Output
 
@@ -141,6 +145,10 @@ functions/src/
 ├── test-helpers.ts   — shared Jest test utilities
 └── *.test.ts         — unit tests for each collector and the orchestrator
 ```
+
+## Related Repositories
+
+- [scrum-poker-frontend](https://github.com/AaronStahley/scrum-poker-frontend): the Next.js app whose rooms, players and anonymous users this function cleans up.
 
 ## License
 
