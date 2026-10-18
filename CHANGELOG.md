@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.1.1] - 2026-10-18
+
+### Added
+- `SECURITY.md` explaining how to report vulnerabilities privately
+- Weekly Dependabot update PRs for npm and GitHub Actions, targeting `develop`
+
+### Changed
+- GitHub Actions moved off the deprecated Node 20 runtime: `actions/checkout` v7, `actions/setup-node` v7, `google-github-actions/auth` v3
+
 ## [1.1.0] - 2026-10-18
 
 ### Security
