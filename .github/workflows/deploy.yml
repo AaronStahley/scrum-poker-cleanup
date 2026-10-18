@@ -5,6 +5,10 @@ on:
     branches: [main]
   workflow_dispatch:
 
+permissions:
+  contents: read
+  id-token: write # lets the job request a GitHub OIDC token for Workload Identity Federation
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -25,19 +29,14 @@ jobs:
         run: npm run build
         working-directory: functions
 
-      - name: Write service account key
-        # Pass via env so GitHub Actions masks the value in logs.
-        # Future: migrate to Workload Identity Federation to eliminate the long-lived key entirely.
-        env:
-          SA_KEY: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
-        run: printf '%s' "$SA_KEY" > /tmp/gcp-sa-key.json
+      # Workload Identity Federation: exchanges the job's OIDC token for short-lived
+      # Google credentials. The provider only accepts this repo's main branch.
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: projects/1062750797267/locations/global/workloadIdentityPools/github/providers/scrum-poker-cleanup
+          service_account: scrum-poker-cleanup-deploy@thescrumpoker.iam.gserviceaccount.com
 
       - name: Deploy to Firebase
         run: npx firebase-tools@15.22.0 deploy --only functions --force
         working-directory: functions
-        env:
-          GOOGLE_APPLICATION_CREDENTIALS: /tmp/gcp-sa-key.json
-
-      - name: Clean up credentials
-        if: always()
-        run: rm -f /tmp/gcp-sa-key.json

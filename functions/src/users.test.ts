@@ -139,14 +139,23 @@ describe("collectStaleAuthUsers", () => {
   });
 
   it("does not flag user whose lastJoinedAt is exactly at the threshold boundary", async () => {
-    // Exactly USER_STALE_DAYS ago — should NOT be stale (< not <=)
+    // Exactly USER_STALE_DAYS ago — should NOT be stale (< not <=).
+    // Freeze Date so the test's daysAgo() and the threshold in users.ts read the same instant.
+    jest.useFakeTimers({
+      now: new Date("2026-06-15T12:00:00Z"),
+      doNotFake: ["nextTick", "setImmediate", "setInterval", "setTimeout", "clearImmediate", "clearInterval", "clearTimeout", "queueMicrotask", "hrtime", "performance"],
+    });
     setupListUsers([makeUser("uid-boundary")]);
     setupPlayerDocs([
       makeDocSnapshot("uid-boundary", { lastJoinedAt: makeTimestamp(daysAgo(30)) }),
     ]);
 
-    const result = await collectStaleAuthUsers(testConfig);
+    try {
+      const result = await collectStaleAuthUsers(testConfig);
 
-    expect(result.staleUids).not.toContain("uid-boundary");
+      expect(result.staleUids).not.toContain("uid-boundary");
+    } finally {
+      jest.useRealTimers();
+    }
   });
 });
