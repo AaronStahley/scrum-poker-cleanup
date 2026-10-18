@@ -1,5 +1,24 @@
 # Changelog
 
+## [1.1.0] - 2026-10-18
+
+### Security
+- Deploys authenticate with Workload Identity Federation instead of a long-lived service-account key. The identity provider only accepts this repository (by ID) on `main`, and the workflow requests only `contents: read` and `id-token: write`
+- Upgraded `firebase-admin` to 13 and patched vulnerable dependencies; production audit goes from 16 issues (1 critical, 4 high) to 9 moderate
+
+### Added
+- CI workflow that builds and runs the tests on pull requests to `main` and `develop`
+- Apache 2.0 license
+
+### Changed
+- Cloud Functions runtime upgraded to Node.js 22 and `firebase-functions` to v7
+- Live cleanup enabled (`DRY_RUN=false`) with explicit 256MiB memory
+- `run-local.ts` reads the project ID from `FIREBASE_PROJECT_ID`, `GOOGLE_CLOUD_PROJECT` or `.firebaserc` instead of hardcoding it
+- README updated for Node 22, project setup, CI and the new deploy authentication, and links to the frontend repo
+
+### Fixed
+- Flaky threshold boundary test in `users.test.ts`; the test now freezes `Date` so the test data and the threshold read the same instant
+
 ## [1.0.0] - 2026-06-20
 
 ### Added
