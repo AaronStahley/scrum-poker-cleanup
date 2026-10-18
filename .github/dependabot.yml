@@ -1,0 +1,21 @@
+version: 2
+updates:
+  # Version update PRs target develop, like any other change. Security update PRs
+  # always target the default branch (main); GitHub doesn't allow changing that.
+  # Merging to main deploys the function, so review those before merging.
+  - package-ecosystem: npm
+    directory: /functions
+    target-branch: develop
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    groups:
+      # One PR for all minor and patch updates; major updates get their own PR
+      minor-and-patch:
+        update-types: [minor, patch]
+
+  - package-ecosystem: github-actions
+    directory: /
+    target-branch: develop
+    schedule:
+      interval: weekly
