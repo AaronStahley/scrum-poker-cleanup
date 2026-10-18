@@ -1,3 +1,5 @@
+import { readFileSync } from "fs";
+import { resolve } from "path";
 import { initializeApp } from "firebase-admin/app";
 import { getFirestore } from "firebase-admin/firestore";
 import { config } from "./config";
@@ -5,7 +7,24 @@ import { collectStaleAuthUsers } from "./users";
 import { collectStalePlayers } from "./players";
 import { collectStaleRooms } from "./rooms";
 
-initializeApp({ projectId: "thescrumpoker" });
+// Project ID comes from FIREBASE_PROJECT_ID, then GOOGLE_CLOUD_PROJECT, then the
+// default project in .firebaserc.
+function resolveProjectId(): string {
+  const fromEnv = process.env.FIREBASE_PROJECT_ID || process.env.GOOGLE_CLOUD_PROJECT;
+  if (fromEnv) return fromEnv;
+
+  try {
+    const firebaserc = JSON.parse(readFileSync(resolve(__dirname, "../../.firebaserc"), "utf8"));
+    if (firebaserc.projects?.default) return firebaserc.projects.default;
+  } catch {
+    // Fall through to the error below
+  }
+
+  console.error("ERROR: No Firebase project ID. Set FIREBASE_PROJECT_ID or add a default project to .firebaserc.");
+  process.exit(1);
+}
+
+initializeApp({ projectId: resolveProjectId() });
 
 const db = getFirestore();
 
