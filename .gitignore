@@ -6,3 +6,6 @@ functions/coverage/
 .claude/
 firebase-debug.log
 firebase-debug.*.log
+
+# Short-lived credentials written by google-github-actions/auth
+gha-creds-*.json

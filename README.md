@@ -95,11 +95,9 @@ firebase deploy --only functions
 
 Push to `main` — the workflow in `.github/workflows/deploy.yml` handles the build and deploy automatically.
 
-**Required GitHub Actions secret:**
+The workflow authenticates with [Workload Identity Federation](https://cloud.google.com/iam/docs/workload-identity-federation), so no service-account key is stored in GitHub. Each run exchanges GitHub's OIDC token for short-lived credentials for the `scrum-poker-cleanup-deploy` service account. The identity provider only accepts runs from this repository's `main` branch.
 
-| Secret | Description |
-|---|---|
-| `FIREBASE_SERVICE_ACCOUNT` | Firebase service account JSON with `Cloud Datastore User` and `Firebase Authentication Admin` roles |
+To deploy from a fork to your own project, create a workload identity pool and provider in that project and update the `workload_identity_provider` and `service_account` values in `deploy.yml`.
 
 ## Testing
 
